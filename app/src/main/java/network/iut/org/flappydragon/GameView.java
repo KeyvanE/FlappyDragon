@@ -21,13 +21,21 @@ public class GameView extends SurfaceView implements Runnable {
     private Background background;
     private SoundManager soundManager;
 
+    private Sound backgroundMusic;
+    private Sound jumpSound;
+
     public GameView(Context context) {
         super(context);
         player = new Player(context, this);
         background = new Background(context, this);
         holder = getHolder();
-        soundManager = new SoundManager(context, this);
-        soundManager.load(SoundManager.TRACK_MUSIC, 0.8f, 0.8f, true);
+
+        backgroundMusic = new Sound(context, SoundManager.TRACK_MUSIC).setVolume(0.8f, 0.8f).setLoop(true);
+        jumpSound = new Sound(context, SoundManager.TRACK_JUMP);
+        //load sounds and music
+//        soundManager = new SoundManager(context);
+//        soundManager.add(SoundManager.TRACK_MUSIC, "music").setVolume(0.8f, 0.8f).setLoop(true);
+//        soundManager.add(SoundManager.TRACK_JUMP, "jump").setVolume(1.0f, 1.0f).setLoop(false);
 
         new Thread(new Runnable() {
             @Override
@@ -44,9 +52,8 @@ public class GameView extends SurfaceView implements Runnable {
             if(paused) {
                 resume();
             } else {
-                Log.i("PLAYER", "PLAYER TAPPED");
-                backgroundSound.play(BackgroundSound.TRACK_JUMP, 1.0f, 1.0f, false);
                 this.player.onTap();
+                jumpSound.play();
             }
         }
         return true;
@@ -55,7 +62,7 @@ public class GameView extends SurfaceView implements Runnable {
     private void resume() {
         paused = false;
         startTimer();
-        backgroundSound.execute();
+        backgroundMusic.play();
     }
 
     private void startTimer() {

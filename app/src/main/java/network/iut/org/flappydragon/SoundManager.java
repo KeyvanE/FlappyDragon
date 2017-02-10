@@ -10,52 +10,33 @@ import android.util.Log;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Keyvan on 10/02/2017.
  */
 
-public class SoundManager extends AsyncTask<Void, Void, Void> {
+public class SoundManager {
     /** SOUNDS **/
     public static final int TRACK_MUSIC = R.raw.happy;
     public static final int TRACK_JUMP = R.raw.jump;
-
     private Context context;
-    private GameView view;
-    private SoundPool soundPool;
-    private ArrayList<Sound> sounds;
-    private int selectedTrack;
-    private float volumeL;
-    private float volumeR;
-    private boolean loop;
 
-    public SoundManager(Context context, GameView view) {
+    private Map<String, Sound> sounds;
+
+    public SoundManager(Context context) {
         this.context = context;
-        this.view = view;
+        this.sounds = new HashMap<String, Sound>();
     }
 
-    public void add(Sound sound) {
-        this.sounds.add(sound);
+    public Sound add(int trackID, String name) {
+        Sound added = new Sound(this.context, trackID);
+        this.sounds.put(name, added);
+        return added;
     }
 
-    public void load(int track, float volumeL, float volumeR, boolean loop) {
-        this.selectedTrack = track;
-        this.volumeL = volumeL;
-        this.volumeR = volumeR;
-        this.loop = loop;
-    }
-
-    public void play(int trackID) {
-
-    }
-
-    @Override
-    protected Void doInBackground(Void... params) {
-        MediaPlayer player = MediaPlayer.create(this.context, selectedTrack);
-        player.setLooping(this.loop); // Set looping
-        player.setVolume(this.volumeL, this.volumeR);
-        player.start();
-
-        return null;
+    public Sound get(String name) {
+        return this.sounds.get(name);
     }
 }
