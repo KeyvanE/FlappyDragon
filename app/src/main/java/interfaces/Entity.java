@@ -1,4 +1,4 @@
-package network.iut.org.flappydragon;
+package interfaces;
 
 import android.content.Context;
 import android.graphics.Bitmap;

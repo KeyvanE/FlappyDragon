@@ -1,12 +1,16 @@
-package network.iut.org.flappydragon;
+package entities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
+
+import interfaces.Entity;
+import network.iut.org.flappydragon.Animation;
+import network.iut.org.flappydragon.GameView;
+import network.iut.org.flappydragon.R;
+import network.iut.org.flappydragon.Util;
 
 public class Player implements Entity {
     /** Static bitmap to reduce memory usage. */

@@ -1,15 +1,8 @@
-package network.iut.org.flappydragon;
+package utility;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.util.Log;
-
-import java.io.IOException;
-
-/**
- * Created by Keyvan on 10/02/2017.
- */
 
 public class Sound extends AsyncTask<Void, Void, Void> {
     private int trackID;
