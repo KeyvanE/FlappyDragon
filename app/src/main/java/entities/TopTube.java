@@ -8,14 +8,9 @@ import android.graphics.Rect;
 import java.util.Random;
 
 import network.iut.org.flappydragon.Animation;
-import network.iut.org.flappydragon.Entity;
+import interfaces.Entity;
 import network.iut.org.flappydragon.GameView;
-import network.iut.org.flappydragon.R;
-import network.iut.org.flappydragon.Sound;
 import network.iut.org.flappydragon.SoundManager;
-import network.iut.org.flappydragon.Util;
-
-import static network.iut.org.flappydragon.SoundManager.TRACK_COIN;
 
 /**
  * Created by Keyvan on 13/03/2017.
@@ -35,20 +30,21 @@ public class TopTube implements Entity {
     private int width;
     private int posX = 0;
     private int posY = 0;
+    private int offset = 0;
     private float speedX;
     private float speedY;
+    private int framecount;
+    private int speedboostInterval = 100;
 
     public TopTube(Context context, GameView view) {
         this.context = context;
         this.view = view;
-        this.animation = new Animation(0);
-        this.animation.addStep(0, Util.getScaledBitmapAlpha8(context, R.drawable.coin));
         this.width = 150;
         this.height = (context.getResources().getDisplayMetrics().heightPixels/2)-300;
         this.speedX = -10;
-        this.posX = context.getResources().getDisplayMetrics().widthPixels;
+        this.posX = context.getResources().getDisplayMetrics().widthPixels+150;
         this.posY = 0;
-        this.hitbox = new Rect(this.posX, this.posY, (this.posX+this.width*2), (this.posY+this.height*2));
+        this.hitbox = new Rect(this.posX, this.posY, (this.posX+this.width), (this.posY+this.height));
         this.hitboxPaint.setAlpha(50);
     }
 
@@ -58,11 +54,11 @@ public class TopTube implements Entity {
     }
 
     public void draw(Canvas canvas) {
-        if(this.posX <= -50) {
+        if(this.posX <= -this.width) {
             resetPosition();
         }
 
-        this.hitbox.set(this.posX, this.posY, (this.posX+this.width*2), (this.posY+this.height*2));
+        this.hitbox.set(this.posX, this.posY, (this.posX+this.width), (this.posY+this.height));
         canvas.drawRect(this.hitbox, this.hitboxPaint);
 
     }
@@ -73,23 +69,24 @@ public class TopTube implements Entity {
     }
 
     public void move() {
-        nextFrame();
+        framecount++;
+        updateSpeed();
         this.posX+=speedX;
     }
 
     @Override
-    public void nextFrame() {
-
-    }
-
-    @Override
-    public float getPosX() {
+    public int getPosX() {
         return this.posX;
     }
 
     @Override
-    public float getPosY() {
+    public int getPosY() {
         return this.posY;
+    }
+
+    @Override
+    public void offsetTo(int offset) {
+        this.posX += offset;
     }
 
     @Override
@@ -97,12 +94,17 @@ public class TopTube implements Entity {
     }
 
     @Override
-    public void onCollision() {
+    public void onCollision(Entity collider) {
         this.view.gameOver();
     }
 
     @Override
-    public boolean isRemovedOnCollision() {
+    public boolean isRemovedOnCollision(Entity collider) {
         return false;
+    }
+
+    public void updateSpeed() {
+        if(framecount%speedboostInterval==0)
+            speedX--;
     }
 }

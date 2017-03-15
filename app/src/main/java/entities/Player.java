@@ -10,7 +10,7 @@ import interfaces.Entity;
 import network.iut.org.flappydragon.Animation;
 import network.iut.org.flappydragon.GameView;
 import network.iut.org.flappydragon.R;
-import network.iut.org.flappydragon.Util;
+import utility.Util;
 
 public class Player implements Entity {
     /** Static bitmap to reduce memory usage. */
@@ -30,10 +30,13 @@ public class Player implements Entity {
 
     public Player(Context context, GameView view) {
 
-        this.animation = new Animation(100);
-        this.animation.addStep(0, Util.getScaledBitmapAlpha8(context, R.drawable.sof1));
-        this.animation.addStep(1, Util.getScaledBitmapAlpha8(context, R.drawable.sof2));
-        this.animation.addStep(2, Util.getScaledBitmapAlpha8(context, R.drawable.sof3));
+        this.animation = new Animation();
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket1));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket2));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket3));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket4));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket5));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket6));
 
         this.width = 100;
         this.height = 100;
@@ -76,35 +79,23 @@ public class Player implements Entity {
             this.speedY = getMaxSpeed();
         }
 
-        // manage frames
-/*        if(row != 3){
-            // not dead
-            if(speedY > getTabSpeed() / 3 && speedY < getMaxSpeed() * 1/3){
-                row = 0;
-            }else if(speedY > 0){
-                row = 1;
-            }else{
-                row = 2;
-            }
-        }
-*/
         this.x += speedX;
         this.y += speedY;
     }
 
     @Override
-    public void nextFrame() {
-
-    }
-
-    @Override
-    public float getPosX() {
+    public int getPosX() {
         return 0;
     }
 
     @Override
-    public float getPosY() {
+    public int getPosY() {
         return 0;
+    }
+
+    @Override
+    public void offsetTo(int offset) {
+
     }
 
     @Override
@@ -113,12 +104,12 @@ public class Player implements Entity {
     }
 
     @Override
-    public void onCollision() {
+    public void onCollision(Entity collider) {
 
     }
 
     @Override
-    public boolean isRemovedOnCollision() {
+    public boolean isRemovedOnCollision(Entity collider) {
         return false;
     }
 

@@ -11,7 +11,9 @@ import android.view.SurfaceView;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static network.iut.org.flappydragon.SoundManager.TRACK_COIN;
+import entities.Player;
+import interfaces.Entity;
+import utility.Sound;
 
 public class GameView extends SurfaceView implements Runnable {
     public static final long UPDATE_INTERVAL = 50; // = 20 FPS
@@ -135,9 +137,10 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void checkForCollision() {
-        Entity collider = entityManager.getCollider(player);
-        if(collider != null)
-            entityManager.destroy(collider);
+
+        Entity victim = entityManager.getCollider(player);
+        if(victim != null)
+            entityManager.collide(player, victim);
     }
 
 }

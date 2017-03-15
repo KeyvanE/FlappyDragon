@@ -1,21 +1,19 @@
 package entities;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import java.util.Random;
 
 import network.iut.org.flappydragon.Animation;
-import network.iut.org.flappydragon.Entity;
+import interfaces.Entity;
 import network.iut.org.flappydragon.GameView;
 import network.iut.org.flappydragon.R;
-import network.iut.org.flappydragon.Sound;
+import utility.Sound;
 import network.iut.org.flappydragon.SoundManager;
-import network.iut.org.flappydragon.Util;
+import utility.Util;
 
 import static network.iut.org.flappydragon.SoundManager.TRACK_COIN;
 
@@ -25,7 +23,6 @@ import static network.iut.org.flappydragon.SoundManager.TRACK_COIN;
 
 public class Coin implements Entity {
 
-    public SoundManager soundManager;
     private Sound pickupSound;
     private Random random = new Random();
 
@@ -38,15 +35,17 @@ public class Coin implements Entity {
     private int width;
     private int posX = 0;
     private int posY = 0;
-    private float speedX;
-    private float speedY;
+    private int speedX;
+    private int speedY;
+    private int framecount;
+    private int speedboostInterval = 100;
 
     public Coin(Context context, GameView view) {
         this.context = context;
         this.view = view;
         this.pickupSound = new Sound(context, TRACK_COIN);
-        this.animation = new Animation(0);
-        this.animation.addStep(0, Util.getScaledBitmapAlpha8(context, R.drawable.coin));
+        this.animation = new Animation();
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.coin));
         this.width = 50;
         this.height = 50;
         this.speedX = -10;
@@ -78,23 +77,24 @@ public class Coin implements Entity {
     }
 
     public void move() {
-        nextFrame();
+        framecount++;
+        updateSpeed();
         this.posX+=speedX;
     }
 
     @Override
-    public void nextFrame() {
-
-    }
-
-    @Override
-    public float getPosX() {
+    public int getPosX() {
         return this.posX;
     }
 
     @Override
-    public float getPosY() {
+    public int getPosY() {
         return this.posY;
+    }
+
+    @Override
+    public void offsetTo(int offset) {
+
     }
 
     @Override
@@ -102,13 +102,18 @@ public class Coin implements Entity {
     }
 
     @Override
-    public void onCollision() {
+    public void onCollision(Entity collider) {
         pickupSound.play();
         resetPosition();
     }
 
     @Override
-    public boolean isRemovedOnCollision() {
+    public boolean isRemovedOnCollision(Entity collider) {
         return false;
+    }
+
+    public void updateSpeed() {
+        if(framecount%speedboostInterval==0)
+            speedX--;
     }
 }

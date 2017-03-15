@@ -13,15 +13,16 @@ public interface Entity {
 
     void move();
 
-    void nextFrame();
+    int getPosX();
 
-    float getPosX();
+    int getPosY();
 
-    float getPosY();
+    void offsetTo(int offset);
 
     void destroy();
 
-    void onCollision();
+    void onCollision(Entity collider);
 
-    boolean isRemovedOnCollision();
+    boolean isRemovedOnCollision(Entity collider);
+
 }

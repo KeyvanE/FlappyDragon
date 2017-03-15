@@ -1,17 +1,10 @@
 package network.iut.org.flappydragon;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
-import android.os.AsyncTask;
-import android.util.Log;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+
+import utility.Sound;
 
 /**
  * Created by Keyvan on 10/02/2017.

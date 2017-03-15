@@ -33,6 +33,8 @@ public class BottomTube implements Entity {
     private int offset = 0;
     private float speedX;
     private float speedY;
+    private int framecount;
+    private int speedboostInterval = 100;
 
     public BottomTube(Context context, GameView view) {
         this.context = context;
@@ -41,7 +43,7 @@ public class BottomTube implements Entity {
         this.height = (context.getResources().getDisplayMetrics().heightPixels/2)-300;
         this.speedX = -10;
         this.posX = context.getResources().getDisplayMetrics().widthPixels+150;
-        this.posY = 0;
+        this.posY = (context.getResources().getDisplayMetrics().heightPixels/2)+300;
         this.hitbox = new Rect(this.posX, this.posY, (this.posX+this.width), (this.posY+this.height));
         this.hitboxPaint.setAlpha(50);
     }
@@ -63,10 +65,12 @@ public class BottomTube implements Entity {
 
     public void resetPosition() {
         this.posX = context.getResources().getDisplayMetrics().widthPixels;
-        this.posY = 0;
+        this.posY = (context.getResources().getDisplayMetrics().heightPixels/2)+300;
     }
 
     public void move() {
+        framecount++;
+        updateSpeed();
         this.posX+=speedX;
     }
 
@@ -97,5 +101,10 @@ public class BottomTube implements Entity {
     @Override
     public boolean isRemovedOnCollision(Entity collider) {
         return false;
+    }
+
+    public void updateSpeed() {
+        if(framecount%speedboostInterval==0)
+            speedX--;
     }
 }

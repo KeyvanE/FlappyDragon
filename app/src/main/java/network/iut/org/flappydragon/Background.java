@@ -3,8 +3,8 @@ package network.iut.org.flappydragon;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.util.Log;
+
+import utility.Util;
 
 public class Background {
     private GameView view;

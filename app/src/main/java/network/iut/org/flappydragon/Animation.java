@@ -3,6 +3,7 @@ package network.iut.org.flappydragon;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -11,30 +12,39 @@ import java.util.HashMap;
 
 public class Animation {
 
-    HashMap<Integer, Bitmap> steps = new HashMap<Integer, Bitmap>();
-    private int frameCount = 0;
+    ArrayList<Bitmap> steps = new ArrayList<Bitmap>();
     private int duration = 0;
+    private int framecount = 0;
+    private int step = 0;
+    private Bitmap currentFrame;
 
-    public Animation(int duration) {
-        this.duration = duration;
+    public Animation() { }
+
+    /**
+     * Ajoute une frame à l'animation
+     * @param image
+     */
+    public void addStep(Bitmap image) {
+
+        steps.add(image);
+        this.duration = steps.size();
+
     }
 
-    public void addStep(Integer frame, Bitmap image) {
-        steps.put(frame, image);
-    }
-
+    /**
+     * Passe à la prochaine frame d'animation
+     * @return
+     */
     public Bitmap next() {
-        frameCount++;
+        this.framecount++;
 
-        if(frameCount >= duration)
-            frameCount = 0;
+        if(framecount%4==0)
+            step++;
 
-        Bitmap next = steps.get(frameCount);
+        if(step==this.duration)
+            step=0;
 
-        if(next != null)
-            return next;
-        else
-            return steps.get(0);
+        return steps.get(step);
     }
 
 }
