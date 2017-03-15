@@ -20,10 +20,11 @@ import java.util.Map;
 public class SoundManager {
     /** SOUNDS **/
     public static final int TRACK_MUSIC = R.raw.happy;
-    public static final int TRACK_JUMP = R.raw.jump;
+    public static final int TRACK_JUMP = R.raw.jump3;
+    public static final int TRACK_COIN = R.raw.coin;
     private Context context;
 
-    private Map<String, Sound> sounds;
+    private HashMap<String, Sound> sounds;
 
     public SoundManager(Context context) {
         this.context = context;

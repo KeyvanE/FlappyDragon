@@ -11,15 +11,19 @@ import android.view.SurfaceView;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static network.iut.org.flappydragon.SoundManager.TRACK_COIN;
+
 public class GameView extends SurfaceView implements Runnable {
     public static final long UPDATE_INTERVAL = 50; // = 20 FPS
     private SurfaceHolder holder;
     private boolean paused = true;
-    private Timer timer = new Timer();
+    public Timer timer = new Timer();
     private TimerTask timerTask;
     private Player player;
     private Background background;
-    private SoundManager soundManager;
+    public SoundManager soundManager;
+    private EntityManager entityManager;
+    private Canvas canvas;
 
     private Sound backgroundMusic;
     private Sound jumpSound;
@@ -28,14 +32,12 @@ public class GameView extends SurfaceView implements Runnable {
         super(context);
         player = new Player(context, this);
         background = new Background(context, this);
+        entityManager = new EntityManager(context, this);
+
         holder = getHolder();
 
         backgroundMusic = new Sound(context, SoundManager.TRACK_MUSIC).setVolume(0.8f, 0.8f).setLoop(true);
         jumpSound = new Sound(context, SoundManager.TRACK_JUMP);
-        //load sounds and music
-//        soundManager = new SoundManager(context);
-//        soundManager.add(SoundManager.TRACK_MUSIC, "music").setVolume(0.8f, 0.8f).setLoop(true);
-//        soundManager.add(SoundManager.TRACK_JUMP, "jump").setVolume(1.0f, 1.0f).setLoop(false);
 
         new Thread(new Runnable() {
             @Override
@@ -51,10 +53,9 @@ public class GameView extends SurfaceView implements Runnable {
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             if(paused) {
                 resume();
-            } else {
-                this.player.onTap();
-                jumpSound.play();
             }
+            this.player.onTap();
+            jumpSound.play();
         }
         return true;
     }
@@ -96,6 +97,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
         background.move();
         player.move();
+        entityManager.update();
 
         draw();
     }
@@ -106,18 +108,36 @@ public class GameView extends SurfaceView implements Runnable {
             try { Thread.sleep(10); } catch (InterruptedException e) { e.printStackTrace(); }
         }
         Canvas canvas = holder.lockCanvas();
+        this.canvas = canvas;
         if (canvas != null) {
             drawCanvas(canvas);
         }
-        holder.unlockCanvasAndPost(canvas);
+        try {
+            holder.unlockCanvasAndPost(canvas);
+        } catch (IllegalStateException e) {
+        }
     }
 
     private void drawCanvas(Canvas canvas) {
+        checkForCollision();
         background.draw(canvas);
         player.draw(canvas);
+        entityManager.draw(canvas);
+
+        entityManager.getCollider(player);
         if (paused) {
             canvas.drawText("PAUSED", canvas.getWidth() / 2, canvas.getHeight() / 2, new Paint());
         }
+    }
+
+    public void gameOver() {
+        canvas.drawText("GAME OVER", canvas.getWidth() / 2, canvas.getHeight() / 2, new Paint());
+    }
+
+    private void checkForCollision() {
+        Entity collider = entityManager.getCollider(player);
+        if(collider != null)
+            entityManager.destroy(collider);
     }
 
 }

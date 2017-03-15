@@ -4,15 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
-public class Player {
+public class Player implements Entity {
     /** Static bitmap to reduce memory usage. */
     public static Bitmap globalBitmap;
-    private final Bitmap bitmap;
-    private final byte frameTime;
-    private int frameTimeCounter;
+    private Paint hitboxPaint = new Paint();
+
+    private Animation animation;
+    private Rect hitbox;
+    private int frameCount;
     private final int width;
     private final int height;
     private int x;
@@ -22,18 +25,24 @@ public class Player {
     private GameView view;
 
     public Player(Context context, GameView view) {
-        if(globalBitmap == null) {
-            globalBitmap = Util.getScaledBitmapAlpha8(context, R.drawable.frame1);
-        }
-        this.bitmap = globalBitmap;
-        this.width = this.bitmap.getWidth();
-        this.height = this.bitmap.getHeight();
-        this.frameTime = 3;		// the frame will change every 3 runs
+
+        this.animation = new Animation(100);
+        this.animation.addStep(0, Util.getScaledBitmapAlpha8(context, R.drawable.sof1));
+        this.animation.addStep(1, Util.getScaledBitmapAlpha8(context, R.drawable.sof2));
+        this.animation.addStep(2, Util.getScaledBitmapAlpha8(context, R.drawable.sof3));
+
+        this.width = 100;
+        this.height = 100;
+
         this.y = context.getResources().getDisplayMetrics().heightPixels / 2;	// Startposition in the middle of the screen
+        this.x = context.getResources().getDisplayMetrics().widthPixels / 6;
 
         this.view = view;
-        this.x = this.view.getWidth() / 6;
         this.speedX = 0;
+
+        this.hitbox = new Rect(this.x, this.y, (this.x+this.width*2), (this.y+this.height*2));
+        this.hitboxPaint.setAlpha(0);
+
     }
 
     public void onTap() {
@@ -50,15 +59,12 @@ public class Player {
     }
 
     public void move() {
-        changeToNextFrame();
 
         if(speedY < 0){
             // The character is moving up
-            Log.i("Move", "Moving up");
             speedY = speedY * 2 / 3 + getSpeedTimeDecrease() / 2;
         }else{
             // the character is moving down
-            Log.i("Move", "Moving down");
             this.speedY += getSpeedTimeDecrease();
         }
         if(this.speedY > getMaxSpeed()){
@@ -82,12 +88,34 @@ public class Player {
         this.y += speedY;
     }
 
-    protected void changeToNextFrame(){
-        this.frameTimeCounter++;
-        if(this.frameTimeCounter >= this.frameTime){
-            //TODO Change frame
-            this.frameTimeCounter = 0;
-        }
+    @Override
+    public void nextFrame() {
+
+    }
+
+    @Override
+    public float getPosX() {
+        return 0;
+    }
+
+    @Override
+    public float getPosY() {
+        return 0;
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
+    public void onCollision() {
+
+    }
+
+    @Override
+    public boolean isRemovedOnCollision() {
+        return false;
     }
 
     private float getSpeedTimeDecrease() {
@@ -98,7 +126,15 @@ public class Player {
         return view.getHeight() / 51.2f;
     }
 
+    @Override
+    public Rect getHitbox() {
+        return this.hitbox;
+    }
+
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, x, y , null);
+        frameCount++;
+        canvas.drawBitmap(this.animation.next(), x, y , null);
+        this.hitbox.set(this.x, this.y, (this.x+this.width*2), (this.y+this.height*2));
+        canvas.drawRect(this.hitbox, this.hitboxPaint);
     }
 }
