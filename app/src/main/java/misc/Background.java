@@ -1,10 +1,12 @@
-package network.iut.org.flappydragon;
+package misc;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import utility.Util;
+import common.Util;
+import network.iut.org.flappydragon.GameView;
+import network.iut.org.flappydragon.R;
 
 public class Background {
     private GameView view;

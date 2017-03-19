@@ -1,4 +1,4 @@
-package utility;
+package common;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -28,6 +28,10 @@ public class Sound extends AsyncTask<Void, Void, Void> {
 
     public void pause() {
         this.player.pause();
+    }
+
+    public void seekTo(int pos) {
+        this.player.seekTo(pos);
     }
 
     public void stop() {

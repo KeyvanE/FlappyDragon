@@ -5,39 +5,30 @@ import android.graphics.Canvas;
 
 import java.util.ArrayList;
 
-import entities.BottomTube;
 import entities.Coin;
-import entities.TopTube;
+import entities.DeathZone;
 import interfaces.Entity;
 
 public class EntityManager {
     private GameView view;
     private Context context;
     private int frameCounter = 0;
-
-    /**
-     * Common elements
-     */
-    TopTube TOP_TUBE_1;
-    TopTube TOP_TUBE_2;
-    BottomTube BOTTOM_TUBE_1;
-    BottomTube BOTTOM_TUBE_2;
+    private boolean gameIsOver = false;
 
     private ArrayList<Entity> entities = new ArrayList<Entity>();
 
     public EntityManager(Context context, GameView view) {
         this.view = view;
         this.context = context;
-
-        TOP_TUBE_1 = new TopTube(context, view);
-        TOP_TUBE_2 = new TopTube(context, view);
-        BOTTOM_TUBE_1 = new BottomTube(context, view);
-        BOTTOM_TUBE_2 = new BottomTube(context, view);
+        entities.add(new DeathZone(context, view, this));
     }
 
     public void draw(Canvas canvas) {
-        for(Entity el : entities) {
-            el.draw(canvas);
+        if(!this.gameIsOver)
+        {
+            for(Entity el : entities) {
+                el.draw(canvas);
+            }
         }
     }
 
@@ -45,23 +36,13 @@ public class EntityManager {
         this.frameCounter++;
 
         if(this.frameCounter == 50)
-            entities.add(new Coin(context, view));
-
-        if(this.frameCounter == 100) {
-            //make space between first and second tube
-            TOP_TUBE_2.offsetTo(530);
-            entities.add(TOP_TUBE_1);
-            entities.add(TOP_TUBE_2);
-            BOTTOM_TUBE_2.offsetTo(530);
-            entities.add(BOTTOM_TUBE_1);
-            entities.add(BOTTOM_TUBE_2);
-        }
+            entities.add(new Coin(context, view, this));
 
         if(this.frameCounter == 150)
-            entities.add(new Coin(context, view));
+            entities.add(new Coin(context, view, this));
 
         if(this.frameCounter == 250)
-            entities.add(new Coin(context, view));
+            entities.add(new Coin(context, view, this));
 
         for(Entity el : entities) {
             el.move();
@@ -97,6 +78,11 @@ public class EntityManager {
 
         if(culprit.isRemovedOnCollision(victim))
             entities.remove(victim);
+    }
+
+    public void reset() {
+        for(Entity el : entities)
+            el.reset();
     }
 
 }

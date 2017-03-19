@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import interfaces.Entity;
-import network.iut.org.flappydragon.Animation;
+import common.Animation;
+import network.iut.org.flappydragon.EntityManager;
 import network.iut.org.flappydragon.GameView;
 import network.iut.org.flappydragon.R;
-import utility.Util;
+import common.Util;
 
 public class Player implements Entity {
     /** Static bitmap to reduce memory usage. */
@@ -27,24 +29,30 @@ public class Player implements Entity {
     private float speedX;
     private float speedY;
     private GameView view;
+    private Context context;
+    private EntityManager manager;
 
-    public Player(Context context, GameView view) {
+    public Player(Context context, GameView view, EntityManager manager) {
+
+        this.context = context;
+        this.view = view;
+        this.manager = manager;
 
         this.animation = new Animation();
-        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket1));
-        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket2));
-        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket3));
-        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket4));
-        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket5));
-        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.rocket6));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame1));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame2));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame3));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame4));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame5));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame6));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame7));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.frame8));
 
         this.width = 100;
         this.height = 100;
 
-        this.y = context.getResources().getDisplayMetrics().heightPixels / 2;	// Startposition in the middle of the screen
-        this.x = context.getResources().getDisplayMetrics().widthPixels / 6;
+        this.resetPosition();
 
-        this.view = view;
         this.speedX = 0;
 
         this.hitbox = new Rect(this.x, this.y, (this.x+this.width*2), (this.y+this.height*2));
@@ -55,6 +63,10 @@ public class Player implements Entity {
     public void onTap() {
         this.speedY = getTabSpeed();
         this.y += getPosTabIncrease();
+    }
+    private void resetPosition() {
+        this.y = context.getResources().getDisplayMetrics().heightPixels / 2;	// Startposition in the middle of the screen
+        this.x = context.getResources().getDisplayMetrics().widthPixels / 6;
     }
 
     private float getPosTabIncrease() {
@@ -99,13 +111,25 @@ public class Player implements Entity {
     }
 
     @Override
+    public void hide(Canvas canvas) {
+        this.x = -99999;
+        this.draw(canvas);
+    }
+
+    @Override
     public void destroy() {
 
     }
 
     @Override
-    public void onCollision(Entity collider) {
+    public void reset() {
+        this.resetPosition();
+    }
 
+    @Override
+    public void onCollision(Entity collider) {
+        if(collider.getClass().toString().indexOf("DeathZone") > -1)
+            view.gameOver();
     }
 
     @Override

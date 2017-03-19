@@ -7,13 +7,13 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
-import network.iut.org.flappydragon.Animation;
+import common.Animation;
 import interfaces.Entity;
+import network.iut.org.flappydragon.EntityManager;
 import network.iut.org.flappydragon.GameView;
 import network.iut.org.flappydragon.R;
-import utility.Sound;
-import network.iut.org.flappydragon.SoundManager;
-import utility.Util;
+import common.Sound;
+import common.Util;
 
 import static network.iut.org.flappydragon.SoundManager.TRACK_COIN;
 
@@ -29,6 +29,7 @@ public class Coin implements Entity {
     private Animation animation;
     private GameView view;
     private Context context;
+    private EntityManager manager;
     private Rect hitbox;
     private Paint hitboxPaint = new Paint();
     private int height;
@@ -40,12 +41,17 @@ public class Coin implements Entity {
     private int framecount;
     private int speedboostInterval = 100;
 
-    public Coin(Context context, GameView view) {
+    public Coin(Context context, GameView view, EntityManager manager) {
         this.context = context;
         this.view = view;
+        this.manager = manager;
+
         this.pickupSound = new Sound(context, TRACK_COIN);
         this.animation = new Animation();
-        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.coin));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.coin1));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.coin2));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.coin3));
+        this.animation.addStep(Util.getScaledBitmapAlpha8(context, R.drawable.coin4));
         this.width = 50;
         this.height = 50;
         this.speedX = -10;
@@ -102,8 +108,20 @@ public class Coin implements Entity {
     }
 
     @Override
+    public void reset() {
+        this.resetPosition();
+    }
+
+    @Override
+    public void hide(Canvas canvas) {
+        this.posX = -99999;
+        this.draw(canvas);
+    }
+
+    @Override
     public void onCollision(Entity collider) {
         pickupSound.play();
+        view.updateScore(1);
         resetPosition();
     }
 

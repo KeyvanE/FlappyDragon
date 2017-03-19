@@ -7,43 +7,50 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
+import common.Animation;
+import common.Sound;
+import common.Util;
 import interfaces.Entity;
-import network.iut.org.flappydragon.Animation;
+import network.iut.org.flappydragon.EntityManager;
 import network.iut.org.flappydragon.GameView;
-import network.iut.org.flappydragon.SoundManager;
+import network.iut.org.flappydragon.R;
+
+import static network.iut.org.flappydragon.SoundManager.TRACK_COIN;
 
 /**
  * Created by Keyvan on 13/03/2017.
  */
 
-public class BottomTube implements Entity {
+public class DeathZone implements Entity {
 
-    public SoundManager soundManager;
     private Random random = new Random();
 
     private Animation animation;
     private GameView view;
     private Context context;
+    private EntityManager manager;
     private Rect hitbox;
     private Paint hitboxPaint = new Paint();
     private int height;
     private int width;
     private int posX = 0;
     private int posY = 0;
-    private int offset = 0;
-    private float speedX;
-    private float speedY;
+    private int speedX;
+    private int speedY;
     private int framecount;
     private int speedboostInterval = 100;
 
-    public BottomTube(Context context, GameView view) {
+    public DeathZone(Context context, GameView view, EntityManager manager) {
         this.context = context;
         this.view = view;
-        this.width = 150;
-        this.height = (context.getResources().getDisplayMetrics().heightPixels/2)-300;
-        this.speedX = -10;
-        this.posX = context.getResources().getDisplayMetrics().widthPixels+150;
-        this.posY = (context.getResources().getDisplayMetrics().heightPixels/2)+300;
+        this.manager = manager;
+
+        this.animation = new Animation();
+        this.width = 1920;
+        this.height = 150;
+        this.speedX = 0;
+        this.posX = 0;
+        this.posY = context.getResources().getDisplayMetrics().heightPixels-150;
         this.hitbox = new Rect(this.posX, this.posY, (this.posX+this.width), (this.posY+this.height));
         this.hitboxPaint.setAlpha(50);
     }
@@ -54,24 +61,14 @@ public class BottomTube implements Entity {
     }
 
     public void draw(Canvas canvas) {
-        if(this.posX <= -this.width) {
-            resetPosition();
-        }
 
         this.hitbox.set(this.posX, this.posY, (this.posX+this.width), (this.posY+this.height));
         canvas.drawRect(this.hitbox, this.hitboxPaint);
-
     }
 
-    public void resetPosition() {
-        this.posX = context.getResources().getDisplayMetrics().widthPixels;
-        this.posY = (context.getResources().getDisplayMetrics().heightPixels/2)+300;
-    }
-
+    @Override
     public void move() {
-        framecount++;
-        updateSpeed();
-        this.posX+=speedX;
+
     }
 
     @Override
@@ -86,7 +83,7 @@ public class BottomTube implements Entity {
 
     @Override
     public void offsetTo(int offset) {
-        this.posX += offset;
+
     }
 
     @Override
@@ -94,8 +91,18 @@ public class BottomTube implements Entity {
     }
 
     @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public void hide(Canvas canvas) {
+
+    }
+
+    @Override
     public void onCollision(Entity collider) {
-        this.view.gameOver();
+
     }
 
     @Override
@@ -103,8 +110,4 @@ public class BottomTube implements Entity {
         return false;
     }
 
-    public void updateSpeed() {
-        if(framecount%speedboostInterval==0)
-            speedX--;
-    }
 }

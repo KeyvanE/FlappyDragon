@@ -19,7 +19,11 @@ public interface Entity {
 
     void offsetTo(int offset);
 
+    void hide(Canvas canvas);
+
     void destroy();
+
+    void reset();
 
     void onCollision(Entity collider);
 
