@@ -16,6 +16,7 @@ public class SoundManager {
     public static final int TRACK_MUSIC = R.raw.happy;
     public static final int TRACK_JUMP = R.raw.jump;
     public static final int TRACK_COIN = R.raw.coin;
+    public static final int TRACK_BOOM = R.raw.explosion;
     private Context context;
 
     private ArrayList<Sound> sounds;

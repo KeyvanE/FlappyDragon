@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import entities.Coin;
 import entities.DeathZone;
+import entities.Ennemy;
 import interfaces.Entity;
 
 public class EntityManager {
@@ -38,11 +39,23 @@ public class EntityManager {
         if(this.frameCounter == 50)
             entities.add(new Coin(context, view, this));
 
+        if(this.frameCounter == 100)
+            entities.add(new Ennemy(context, view, this));
+
         if(this.frameCounter == 150)
             entities.add(new Coin(context, view, this));
 
+        if(this.frameCounter == 200)
+            entities.add(new Ennemy(context, view, this));
+
         if(this.frameCounter == 250)
             entities.add(new Coin(context, view, this));
+
+        if(this.frameCounter == 300)
+            entities.add(new Ennemy(context, view, this));
+
+        if(this.frameCounter == 400)
+            entities.add(new Ennemy(context, view, this));
 
         for(Entity el : entities) {
             el.move();

@@ -55,7 +55,7 @@ public class Player implements Entity {
 
         this.speedX = 0;
 
-        this.hitbox = new Rect(this.x, this.y, (this.x+this.width*2), (this.y+this.height*2));
+        this.hitbox = new Rect(this.x, this.y, (this.x+this.width*2), (this.y+this.height));
         this.hitboxPaint.setAlpha(0);
 
     }
@@ -130,6 +130,9 @@ public class Player implements Entity {
     public void onCollision(Entity collider) {
         if(collider.getClass().toString().indexOf("DeathZone") > -1)
             view.gameOver();
+
+        if(collider.getClass().toString().indexOf("Ennemy") > -1)
+            view.gameOver();
     }
 
     @Override
@@ -153,7 +156,7 @@ public class Player implements Entity {
     public void draw(Canvas canvas) {
         frameCount++;
         canvas.drawBitmap(this.animation.next(), x, y , null);
-        this.hitbox.set(this.x, this.y, (this.x+this.width*2), (this.y+this.height*2));
+        this.hitbox.set(this.x, this.y, (this.x+this.width*2), (this.y+this.height));
         canvas.drawRect(this.hitbox, this.hitboxPaint);
     }
 }
